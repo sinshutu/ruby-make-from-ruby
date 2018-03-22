@@ -25,6 +25,13 @@ def evoluate(tree)
     evoluate(tree[1]) < evoluate(tree[2])
   when "func_call"
     p(evoluate(tree[2]))
+  when "stmts"
+    i = 1
+    while tree[i] != nil
+      last = evoluate(tree[i])
+      i += 1
+    end
+    last
   else
     "no support operand: #{tree[0]}"
   end

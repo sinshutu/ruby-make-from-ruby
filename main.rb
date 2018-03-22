@@ -1,34 +1,34 @@
 require 'minruby'
 
 
-def evoluate(tree)
+def evoluate(tree, env)
   case tree[0]
   when "lit"
     tree[1]
   when "+"
-    evoluate(tree[1]) + evoluate(tree[2])
+    evoluate(tree[1], env) + evoluate(tree[2], env)
   when "-"
-    evoluate(tree[1]) - evoluate(tree[2])
+    evoluate(tree[1], env) - evoluate(tree[2], env)
   when "*"
-    evoluate(tree[1]) * evoluate(tree[2])
+    evoluate(tree[1], env) * evoluate(tree[2], env)
   when "**"
-    evoluate(tree[1]) ** evoluate(tree[2])
+    evoluate(tree[1], env) ** evoluate(tree[2], env)
   when "/"
-    evoluate(tree[1]) / evoluate(tree[2])
+    evoluate(tree[1], env) / evoluate(tree[2], env)
   when "%"
-    evoluate(tree[1]) % evoluate(tree[2])
+    evoluate(tree[1], env) % evoluate(tree[2], env)
   when "=="
-    evoluate(tree[1]) == evoluate(tree[2])
+    evoluate(tree[1], env) == evoluate(tree[2], env)
   when ">"
-    evoluate(tree[1]) > evoluate(tree[2])
+    evoluate(tree[1], env) > evoluate(tree[2], env)
   when "<"
-    evoluate(tree[1]) < evoluate(tree[2])
+    evoluate(tree[1], env) < evoluate(tree[2], env)
   when "func_call"
-    p(evoluate(tree[2]))
+    p(evoluate(tree[2], env))
   when "stmts"
     i = 1
     while tree[i] != nil
-      last = evoluate(tree[i])
+      last = evoluate(tree[i], env)
       i += 1
     end
     last
@@ -51,4 +51,5 @@ def max(tree)
 end
 tree = minruby_parse(minruby_load())
 p tree
-evoluate(tree)
+env = {}
+evoluate(tree, env)

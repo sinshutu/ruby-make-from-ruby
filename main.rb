@@ -1,51 +1,51 @@
 require 'minruby'
 
 
-def evoluate(tree, env)
+def evoluate(tree, genv, lenv)
   case tree[0]
   when "lit"
     tree[1]
   when "+"
-    env['plus_count'] += 1 unless env['plus_count'].nil?
-    evoluate(tree[1], env) + evoluate(tree[2], env)
+    env['plus_count'] += 1 unless lenv['plus_count'].nil?
+    evoluate(tree[1], genv, lenv) + evoluate(tree[2], genv, lenv)
   when "-"
-    evoluate(tree[1], env) - evoluate(tree[2], env)
+    evoluate(tree[1], genv, lenv) - evoluate(tree[2], genv, lenv)
   when "*"
-    evoluate(tree[1], env) * evoluate(tree[2], env)
+    evoluate(tree[1], genv, lenv) * evoluate(tree[2], genv, lenv)
   when "**"
-    evoluate(tree[1], env) ** evoluate(tree[2], env)
+    evoluate(tree[1], genv, lenv) ** evoluate(tree[2], genv, lenv)
   when "/"
-    evoluate(tree[1], env) / evoluate(tree[2], env)
+    evoluate(tree[1], genv, lenv) / evoluate(tree[2], genv, lenv)
   when "%"
-    evoluate(tree[1], env) % evoluate(tree[2], env)
+    evoluate(tree[1], genv, lenv) % evoluate(tree[2], genv, lenv)
   when "=="
-    evoluate(tree[1], env) == evoluate(tree[2], env)
+    evoluate(tree[1], genv, lenv) == evoluate(tree[2], genv, lenv)
   when ">"
-    evoluate(tree[1], env) > evoluate(tree[2], env)
+    evoluate(tree[1], genv, lenv) > evoluate(tree[2], genv, lenv)
   when "<"
-    evoluate(tree[1], env) < evoluate(tree[2], env)
+    evoluate(tree[1], genv, lenv) < evoluate(tree[2], genv, lenv)
   when "func_call"
-    p(evoluate(tree[2], env))
+    p(evoluate(tree[2], genv, lenv))
   when "var_assign"
-    env[tree[1]] = evoluate(tree[2], env)
+    lenv[tree[1]] = evoluate(tree[2], genv, lenv)
   when "var_ref"
-    env[tree[1]]
+    lenv[tree[1]]
   when "stmts"
     i = 1
     while tree[i] != nil
-      last = evoluate(tree[i], env)
+      last = evoluate(tree[i], genv, lenv)
       i += 1
     end
     last
   when "if"
-    if evoluate(tree[1], env)
-      evoluate(tree[2], env)
+    if evoluate(tree[1], genv, lenv)
+      evoluate(tree[2], genv, lenv)
     else
-      evoluate(tree[3], env)
+      evoluate(tree[3], genv, lenv)
     end
   when "while"
-    while evoluate(tree[1], env)
-      evoluate(tree[2], env)
+    while evoluate(tree[1], genv, lenv)
+      evoluate(tree[2], genv, lenv)
     end
   else
     "no support operand: #{tree[0]}"
@@ -79,5 +79,6 @@ def max(tree)
 end
 tree = minruby_parse(minruby_load())
 p tree
-env = {}
-evoluate(tree, env)
+genv = {}
+lenv = {}
+evoluate(tree, genv, lenv)

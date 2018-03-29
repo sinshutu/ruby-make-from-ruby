@@ -37,6 +37,16 @@ def evoluate(tree, env)
       i += 1
     end
     last
+  when "if"
+    if evoluate(tree[1], env)
+      evoluate(tree[2], env)
+    else
+      evoluate(tree[3], env)
+    end
+  when "while"
+    while evoluate(tree[1], env)
+      evoluate(tree[2], env)
+    end
   else
     "no support operand: #{tree[0]}"
   end

@@ -1,5 +1,7 @@
-if 0 == 0
-  p 42
-else
-  p 43
+a = 20
+case a
+when 10
+  p 'A'
+when 20
+  p 'B'
 end

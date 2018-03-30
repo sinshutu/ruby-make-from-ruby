@@ -25,7 +25,19 @@ def evoluate(tree, genv, lenv)
   when "<"
     evoluate(tree[1], genv, lenv) < evoluate(tree[2], genv, lenv)
   when "func_call"
-    p(evoluate(tree[2], genv, lenv))
+    # p(evoluate(tree[2], genv, lenv))
+    args = []
+    i = 0
+    while tree[i + 2]
+      args[i] = evoluate(tree[i + 2], genv, lenv)
+      i += 1
+    end
+    mhd = genv[tree[1]]
+    if mhd[0] == 'builtin'
+      minruby_call(mhd[1], args)
+    else
+      p 'user def'
+    end
   when "var_assign"
     lenv[tree[1]] = evoluate(tree[2], genv, lenv)
   when "var_ref"
@@ -77,8 +89,34 @@ def max(tree)
     end
   end
 end
+
+def add(x, y)
+  x + y
+end
+
+def fizzbuzz(limit)
+  i = 0
+  while 0 < limit
+    limit = limit - 1
+    i = i + 1
+    if i % 15 == 0
+      p 'FizzBuzz'
+    elsif i % 3 == 0
+      p 'Fizz'
+    elsif i % 5 == 0
+      p 'Buzz'
+    else
+      p i
+    end
+  end
+end
+
 tree = minruby_parse(minruby_load())
 p tree
-genv = {}
+genv = {
+  'p' => ['builtin', 'p'],
+  'add' => ['builtin', 'add'],
+  'fizzbuzz' => ['builtin', 'fizzbuzz'],
+}
 lenv = {}
 evoluate(tree, genv, lenv)

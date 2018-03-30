@@ -1,3 +1,7 @@
-p(1,2)
-p(add(1,2))
-fizzbuzz(100)
+def test(x, y)
+  x + y
+end
+
+x = 10
+p(test(1,2))
+p(x)

@@ -24,8 +24,9 @@ def evoluate(tree, genv, lenv)
     evoluate(tree[1], genv, lenv) > evoluate(tree[2], genv, lenv)
   when "<"
     evoluate(tree[1], genv, lenv) < evoluate(tree[2], genv, lenv)
+  when "func_def"
+    genv[tree[1]] = ['user_defined', tree[2], tree[3]]
   when "func_call"
-    # p(evoluate(tree[2], genv, lenv))
     args = []
     i = 0
     while tree[i + 2]
@@ -36,7 +37,11 @@ def evoluate(tree, genv, lenv)
     if mhd[0] == 'builtin'
       minruby_call(mhd[1], args)
     else
-      p 'user def'
+      new_lenv = {}
+      mhd[1].each_with_index do |param, index|
+        new_lenv[param] = args[index]
+      end
+      evoluate(mhd[2], genv, new_lenv)
     end
   when "var_assign"
     lenv[tree[1]] = evoluate(tree[2], genv, lenv)

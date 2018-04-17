@@ -1,7 +1,10 @@
-def test(x, y)
-  x + y
-end
+# def test(x, y)
+#   x + y
+# end
+# p(test(1,2))
 
 x = 10
-p(test(1,2))
-p(x)
+if x < 9
+  p(x)
+else
+end

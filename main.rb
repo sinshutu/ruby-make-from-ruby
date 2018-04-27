@@ -81,6 +81,10 @@ def evoluate(tree, genv, lenv)
     var = evoluate(tree[1], genv, lenv)
     index = evoluate(tree[2], genv, lenv)
     var[index]
+  when "ary_assign"
+    var = evoluate(tree[1], genv, lenv)
+    index = evoluate(tree[2], genv, lenv)
+    var[index] = evoluate(tree[3], genv, lenv)
   when "hash_new"
     hsh = {}
     i = 0

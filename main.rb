@@ -1,4 +1,4 @@
-require('minruby')
+require 'minruby'
 
 
 def evoluate(tree, genv, lenv)
@@ -43,8 +43,11 @@ def evoluate(tree, genv, lenv)
       minruby_call(mhd[1], args)
     else
       new_lenv = {}
-      mhd[1].each_with_index do |param, index|
-        new_lenv[param] = args[index]
+      params = mhd[1]
+      i = 0
+      while params[i]
+        new_lenv[params[i]] = args[i]
+        i = i + 1
       end
       evoluate(mhd[2], genv, new_lenv)
     end
@@ -54,6 +57,7 @@ def evoluate(tree, genv, lenv)
     lenv[tree[1]]
   when "stmts"
     i = 1
+    last = nil
     while tree[i] != nil
       last = evoluate(tree[i], genv, lenv)
       i = i + 1
@@ -104,9 +108,7 @@ def evoluate(tree, genv, lenv)
   end
 end
 
-
 tree = minruby_parse(minruby_load())
-p tree
 genv = {
   'p' => ['builtin', 'p'],
   'require' => ['builtin', 'require'],

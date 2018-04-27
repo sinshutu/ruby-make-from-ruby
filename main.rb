@@ -1,4 +1,4 @@
-require 'minruby'
+require('minruby')
 
 
 def evoluate(tree, genv, lenv)
@@ -6,7 +6,6 @@ def evoluate(tree, genv, lenv)
   when "lit"
     tree[1]
   when "+"
-    env['plus_count'] += 1 unless lenv['plus_count'].nil?
     evoluate(tree[1], genv, lenv) + evoluate(tree[2], genv, lenv)
   when "-"
     evoluate(tree[1], genv, lenv) - evoluate(tree[2], genv, lenv)
@@ -20,10 +19,16 @@ def evoluate(tree, genv, lenv)
     evoluate(tree[1], genv, lenv) % evoluate(tree[2], genv, lenv)
   when "=="
     evoluate(tree[1], genv, lenv) == evoluate(tree[2], genv, lenv)
+  when "!="
+    evoluate(tree[1], genv, lenv) != evoluate(tree[2], genv, lenv)
   when ">"
     evoluate(tree[1], genv, lenv) > evoluate(tree[2], genv, lenv)
+  when ">="
+    evoluate(tree[1], genv, lenv) >= evoluate(tree[2], genv, lenv)
   when "<"
     evoluate(tree[1], genv, lenv) < evoluate(tree[2], genv, lenv)
+  when "<="
+    evoluate(tree[1], genv, lenv) <= evoluate(tree[2], genv, lenv)
   when "func_def"
     genv[tree[1]] = ['user_defined', tree[2], tree[3]]
   when "func_call"
@@ -31,7 +36,7 @@ def evoluate(tree, genv, lenv)
     i = 0
     while tree[i + 2]
       args[i] = evoluate(tree[i + 2], genv, lenv)
-      i += 1
+      i = i + 1
     end
     mhd = genv[tree[1]]
     if mhd[0] == 'builtin'
@@ -51,7 +56,7 @@ def evoluate(tree, genv, lenv)
     i = 1
     while tree[i] != nil
       last = evoluate(tree[i], genv, lenv)
-      i += 1
+      i = i + 1
     end
     last
   when "if"
@@ -76,64 +81,34 @@ def evoluate(tree, genv, lenv)
     var = evoluate(tree[1], genv, lenv)
     index = evoluate(tree[2], genv, lenv)
     var[index]
+  when "hash_new"
+    hsh = {}
+    i = 0
+    while tree[i + 1]
+      key = evoluate(tree[i + 1], genv, lenv)
+      value = evoluate(tree[i + 2], genv, lenv)
+      hsh[key] = value
+      i = i + 2
+    end
+    hsh
+  when "hash_ref"
+    var = evoluate(tree[1], genv, lenv)
+    key = evoluate(tree[2], genv, lenv)
+    var[key]
   else
     "no support operand: #{tree[0]}"
   end
 end
 
-def plus_count(tree)
-  case tree[0]
-  when "lit"
-    tree[1]
-  else
-    if max(tree[1]) < max(tree[2])
-      max(tree[2])
-    else
-      max(tree[1])
-    end
-  end
-end
-
-def max(tree)
-  case tree[0]
-  when "lit"
-    tree[1]
-  else
-    if max(tree[1]) < max(tree[2])
-      max(tree[2])
-    else
-      max(tree[1])
-    end
-  end
-end
-
-def add(x, y)
-  x + y
-end
-
-def fizzbuzz(limit)
-  i = 0
-  while 0 < limit
-    limit = limit - 1
-    i = i + 1
-    if i % 15 == 0
-      p 'FizzBuzz'
-    elsif i % 3 == 0
-      p 'Fizz'
-    elsif i % 5 == 0
-      p 'Buzz'
-    else
-      p i
-    end
-  end
-end
 
 tree = minruby_parse(minruby_load())
 p tree
 genv = {
   'p' => ['builtin', 'p'],
-  'add' => ['builtin', 'add'],
-  'fizzbuzz' => ['builtin', 'fizzbuzz'],
+  'require' => ['builtin', 'require'],
+  'minruby_parse' => ['builtin', 'minruby_parse'],
+  'minruby_call' => ['builtin', 'minruby_call'],
+  'minruby_load' => ['builtin', 'minruby_load'],
 }
 lenv = {}
 evoluate(tree, genv, lenv)

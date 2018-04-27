@@ -64,6 +64,18 @@ def evoluate(tree, genv, lenv)
     while evoluate(tree[1], genv, lenv)
       evoluate(tree[2], genv, lenv)
     end
+  when "ary_new"
+    ary = []
+    i = 0
+    while tree[i + 1]
+      ary[i] = evoluate(tree[i + 1], genv, lenv)
+      i = i + 1
+    end
+    ary
+  when "ary_ref"
+    var = evoluate(tree[1], genv, lenv)
+    index = evoluate(tree[2], genv, lenv)
+    var[index]
   else
     "no support operand: #{tree[0]}"
   end
